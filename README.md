@@ -1,4 +1,4 @@
-# BusinessData_Twitter_API
+# Business Data Twitter API
 
 
 ##### Title: Business Twitter API for searching and downloading business related data from Twitter REST API.
