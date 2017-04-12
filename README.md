@@ -1,7 +1,7 @@
 # BusinessData_Twitter_API
 
 
-###Title: Business Twitter API for searching and downloading business related data from Twitter REST API.
+##Title: Business Twitter API for searching and downloading business related data from Twitter REST API.
 
 ###Author: Yan Jiang
 
