@@ -2,7 +2,9 @@
 
 
 Title: Business Twitter API for searching and downloading business related data from Twitter REST API.
+
 Author: Yan Jiang
+
 Developed in April, 2017
 
 
