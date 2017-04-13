@@ -167,6 +167,7 @@ class TwitterAPI(object):
     def summarize_business_twitter_data(self, business_name, tweets):
         """
         Summarize the number of tweets related to a business_name by query the database
+        :return a string reporting the name of the business and the assciated number of tweets found in the database
         """
 
         
