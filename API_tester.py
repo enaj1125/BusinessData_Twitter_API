@@ -1,11 +1,13 @@
-# import libraries 
+# This is the test file, which import Business Twitter API module and test each function
 
+
+
+# import libraries 
 from Business_Twitter_API import *
 
 
 
-
-# main function 
+# Main function 
 if __name__ == '__main__':
 
     # Set query paramters 
@@ -26,19 +28,19 @@ if __name__ == '__main__':
 
 
     # Request data from API
-    api.request_business_twitter_data("philz", 1, tweets)
+    api.request_business_twitter_data("philz", -2, tweets)
 
 
     # Check if business data
-    check_exsit = api.check_business_twitter_data("philz", tweets)
-    print check_exsit
+    check_exist = api.check_business_twitter_data("philz", tweets)
+    print check_exist
 
 
     # Summarize business data
-    # summary = api.summarize_business_twitter_data("philz", tweets)
-    # print summary
+    summary = api.summarize_business_twitter_data("philz", tweets)
+    print summary
 
 
     # # Print out business data 
-    # printout = api.print_business_twitter_data("philz", tweets, 5)
+    api.print_business_twitter_data("philz", tweets, 5)
     

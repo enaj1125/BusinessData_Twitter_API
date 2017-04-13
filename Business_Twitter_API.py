@@ -12,26 +12,53 @@
 
 
 # Special features include: 
-# 1) request limit hit: handling the request limit hit error by capturing that error using Exception 
-# 2) duplicated message: handling the duplicated message by check each twitter ID which is unique
+# 1) Request limit hit: handling the request limit hit error by capturing that error using Exception 
+# 2) Prevent duplicated message: handling the duplicated message by check each twitter ID which is unique
+# 3) Check misformat input query parameters: (a) negative number of input message, (b) too long message, which contains more than 140 characters
+# 4) Keep logging record of if a request has been succeed or failed. 
 
 
 
-# 
-from tweepy.streaming import StreamListener
-from tweepy import OAuthHandler
-from tweepy import Stream
-from pymongo import MongoClient
+# Import libraries
 import json
 import time 
 import os
 import tweepy
 import pymongo
 import pprint
+import logging
+from logging.config import dictConfig
+from tweepy.streaming import StreamListener
+from tweepy import OAuthHandler
+from tweepy import Stream
+from pymongo import MongoClient
 
 
 
-# set up twitter api parameter
+# set up the logger using dictionary file 
+logging_config = dict(
+    version = 1,
+    formatters = {
+        'f': {'format':
+              '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'}
+        },
+    handlers = {
+        'h': {'class': 'logging.StreamHandler',
+              'formatter': 'f',
+              'level': logging.DEBUG}
+        },
+    root = {
+        'handlers': ['h'],
+        'level': logging.DEBUG,
+        },
+)
+
+dictConfig(logging_config)
+logger = logging.getLogger()
+
+
+
+# set up twitter api object
 class TwitterAPI(object):
     """
     Access REST API resources
@@ -66,47 +93,59 @@ class TwitterAPI(object):
         :param tweets: file collection of MongoDB, files related to the business 
         """
 
+
+        # handling edge cases
+        if number < 0:
+            logger.debug("User request negative number of message")
+            return 
+
+            
+        # twitter API will not allow for query longer than 140 characters
+        if len(business_name) > 140:
+            logger.debug("User request a too long string")
+            return 
+
+
         # Format query and write to DB
         query = business_name
-        max_tweets = number
         count_distinct = 0 
 
 
-        # Keep download data as long as not reach the limit, if reach limit, sleep for 15 mins and continue download until meet the target number of downloads
-        while count_distinct < number:
-           
-            try: 
+        # Keep download data as long as not reach the token limit     
+        try: 
+            # Write into database iteratively
+            for status in tweepy.Cursor(self.api.search, q=query).items(number):
+
+                # Extract info from tweets 
+                raw_json_info = status._json                # convert status to json 
+                json_str = json.dumps(status._json)         # convert json to str
+                twitter_id = raw_json_info["id"]            # extract twitter id
+
+
+                # check duplicates 
+                check_duplicates = tweets.find({"twitter_id": twitter_id})
+
+
                 # Write into database
-                for status in tweepy.Cursor(self.api.search, q=query).items(max_tweets):
+                if check_duplicates.count() == 0:
+                    count_distinct += 1
+                    
+                    print "Downloaded:", count_distinct
 
-                    # Extract info from tweets 
-                    raw_json_info = status._json                # convert status to json 
-                    json_str = json.dumps(status._json)         # convert json to str
-                    twitter_id = raw_json_info["id"]            # extract twitter id
-
-
-                    # check duplicates 
-                    check_duplicates = tweets.find({"twitter_id": twitter_id})
+                    reformat_tmp = {"business_name": query, "twitter_id": twitter_id, "tweet_data": raw_json_info} 
+                    tweet_id = tweets.insert_one(reformat_tmp).inserted_id                        
 
 
-                    # Write into database
-                    if check_duplicates.count() == 0:
-                        count_distinct += 1
-                        
-                        print "Not dup, save one item in"
-                        print "Downloaded:", count_distinct
-
-                        reformat_tmp = {"business_name": query, "twitter_id": twitter_id, "tweet_data": raw_json_info} 
-                        tweet_id = tweets.insert_one(reformat_tmp).inserted_id                        
-
-
-            except tweepy.error.TweepError:
-                # handle the hitting the request limit error by put a sleep timer for 15 mins. 
-                print "Time limit reached, sleep for 15 mins"
-                time.sleep(15 * 60)
+        except tweepy.error.TweepError:
+            # handle the hitting the request limit error by put a sleep timer for 15 mins. 
+            text_message = "Time limit reached, downloaded " + str(count_distinct) + " messages"
+            logger.debug(text_message)
+            
+                
         
-        # print a warning of finish data downloading 
-        print "Finished data download"
+        # record a note of finish data downloading 
+        logger.debug("Finished data download")
+        
 
 
 
@@ -119,6 +158,11 @@ class TwitterAPI(object):
         :return: bolean variable, True for yes there is this business related data, No for there is no business related data
         """
         
+        # twitter API will not allow for query longer than 140 characters
+        if len(business_name) > 140:
+            logger.debug("User request a too long string")
+            return 
+
         res = tweets.find({"business_name": business_name})
         return res.count() > 0
 
@@ -129,6 +173,13 @@ class TwitterAPI(object):
         """
         Summarize the number of tweets related to a business_name by query the database
         """
+
+        
+        # twitter API will not allow for query longer than 140 characters
+        if len(business_name) > 140:
+            logger.debug("User request a too long string")
+            return 
+
 
         res = tweets.find({"business_name": business_name})
         num_tweets = res.count()
@@ -146,16 +197,29 @@ class TwitterAPI(object):
         :print out the json file onto screen
         """
 
+        
+        # handling edge cases
+        if num < 0:
+            logger.debug("User request negative number of message")
+            return 
+
+
+        # twitter API will not allow for query longer than 140 characters
+        if len(business_name) > 140:
+            logger.debug("User request a too long string")
+            return 
+
+
+        # search related file to print and use counter to control the number of prints
         res = tweets.find({"business_name": business_name})
         num_tweets = res.count()
         num = min(num_tweets, num) # if the user request to print more than exsiting number of tweets, print all the available tweets 
-
         counter = 0 
-        for doc in res:
-            # use counter to control the number of prints
+
+        for doc in res:            
             counter += 1
             if counter > num:
                 break 
-
             print doc
+
 
