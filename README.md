@@ -39,7 +39,7 @@ consumer_key = os.environ.get("consumer_key")
 consumer_secret = os.environ.get("consumer_secret")
 
 
-2) Set up Mongo DB 
+##### 2) Set up Mongo DB 
 
 client = MongoClient()
 
@@ -48,11 +48,11 @@ db = client.test_database  # get a database
 tweets = db.tweets         # get a collection
 
 
-3) Intilize API
+##### 3) Intilize API
 
 api = TwitterAPI(access_token, access_token_secret, consumer_key, consumer_secret)    
 
 
-4) Request data from API
+##### 4) Request data from API
     
 api.request_business_twitter_data("philz", -2, tweets)
