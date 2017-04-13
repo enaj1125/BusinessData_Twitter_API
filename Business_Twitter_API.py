@@ -91,6 +91,7 @@ class TwitterAPI(object):
         :param business name: string, name of the business
         :param number: int, number of tweets requested
         :param tweets: file collection of MongoDB, files related to the business 
+        :return: None
         """
 
 
