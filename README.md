@@ -9,10 +9,10 @@
 
 
 ### Major functions:
-1) request twitter data related to a business: request_business_twitter_data
-2) check if there is twitter data related to a business: check_business_twitter_data
-3) summarize twitter data related to a business: summarize_business_twitter_data
-4) print to screen twitter data related to business in the database: request_business_twitter_data
+1) Request a number of twitter data related to a business: request_business_twitter_data
+2) Check if there is twitter data related to a business in the database: check_business_twitter_data
+3) Summarize the exsiting twitter data related to a business in the database: summarize_business_twitter_data
+4) Print to screen the business related data that currently stored in the database: request_business_twitter_data
 
 
 ### Special features include: 
