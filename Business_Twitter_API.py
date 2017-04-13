@@ -129,8 +129,6 @@ class TwitterAPI(object):
                 # Write into database
                 if check_duplicates.count() == 0:
                     count_distinct += 1
-                    
-                    print "Downloaded:", count_distinct
 
                     reformat_tmp = {"business_name": query, "twitter_id": twitter_id, "tweet_data": raw_json_info} 
                     tweet_id = tweets.insert_one(reformat_tmp).inserted_id                        
