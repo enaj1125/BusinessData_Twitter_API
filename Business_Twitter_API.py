@@ -133,7 +133,7 @@ class TwitterAPI(object):
 
 
         except tweepy.error.TweepError:
-            # handle the hitting the request limit error by put a sleep timer for 15 mins. 
+            # handle the hitting the request limit error by stopping the program and put a message in logging file. 
             text_message = "Time limit reached, downloaded " + str(count_distinct) + " messages"
             logger.debug(text_message)           
                 
