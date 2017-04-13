@@ -16,7 +16,8 @@
 
 
 ### Special features include: 
-1) request limit hit: handling the request limit hit error by capturing that error using Exception 
-2) duplicated message: handling the duplicated message by check each twitter ID which is unique
-
+1) Request limit hit: handling the request limit hit error by capturing that error using Exception 
+2) Prevent duplicated message: handling the duplicated message by check each twitter ID which is unique
+3) Check misformat input query parameters: (a) negative number of input message, (b) too long message, which contains more than 140 characters
+4) Keep logging record of if a request has been succeed or failed. 
 
