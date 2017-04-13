@@ -21,39 +21,54 @@
 
 
 1) how to import API library 
+
 from Business_Twitter_API import *
 
 
 2) Set query paramters 
-   access_token = os.environ.get("access_token")
-   access_token_secret = os.environ.get("access_token_secret")
-   consumer_key = os.environ.get("consumer_key")
-   consumer_secret = os.environ.get("consumer_secret")
+
+access_token = os.environ.get("access_token")
+
+access_token_secret = os.environ.get("access_token_secret")
+
+consumer_key = os.environ.get("consumer_key")
+
+consumer_secret = os.environ.get("consumer_secret")
 
 
 3) Set up Mongo DB 
-  client = MongoClient()
-  db = client.test_database  # get a database
-  tweets = db.tweets         # get a collection
+
+client = MongoClient()
+
+db = client.test_database  # get a database
+
+tweets = db.tweets         # get a collection
 
 
 4) Intilize API
-    api = TwitterAPI(access_token, access_token_secret, consumer_key, consumer_secret)    
+  
+api = TwitterAPI(access_token, access_token_secret, consumer_key, consumer_secret)    
 
 
 5) Request data from API
-    api.request_business_twitter_data("philz", -2, tweets)
+    
+api.request_business_twitter_data("philz", -2, tweets)
 
 
 6) Check if business data
-    check_exist = api.check_business_twitter_data("philz", tweets)
-    print check_exist
+
+check_exist = api.check_business_twitter_data("philz", tweets)
+
+print check_exist
 
 
 7) Summarize business data
-    summary = api.summarize_business_twitter_data("philz", tweets)
-    print summary
+    
+summary = api.summarize_business_twitter_data("philz", tweets)
+ 
+ print summary
 
 
- 8) Print out business data 
-    api.print_business_twitter_data("philz", tweets, 5)
+8) Print out business data 
+    
+api.print_business_twitter_data("philz", tweets, 5)
