@@ -121,10 +121,8 @@ class TwitterAPI(object):
                 json_str = json.dumps(status._json)         # convert json to str
                 twitter_id = raw_json_info["id"]            # extract twitter id
 
-
                 # check duplicates 
                 check_duplicates = tweets.find({"twitter_id": twitter_id})
-
 
                 # Write into database
                 if check_duplicates.count() == 0:
@@ -137,8 +135,7 @@ class TwitterAPI(object):
         except tweepy.error.TweepError:
             # handle the hitting the request limit error by put a sleep timer for 15 mins. 
             text_message = "Time limit reached, downloaded " + str(count_distinct) + " messages"
-            logger.debug(text_message)
-            
+            logger.debug(text_message)           
                 
         
         # record a note of finish data downloading 
